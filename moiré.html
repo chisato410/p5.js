@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <title>moiré</title>
+    <style>
+      canvas {
+        background: #ddd;
+        border: 1px solid #aaa;
+      }
+    </style>
+  </head>
+  <body>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.11.11/lib/p5.min.js"></script>
+    <script>
+      let spacing = 20; // 線の間隔
+      let speed = 0.5; // 線の動く速さ
+
+      function setup() {
+        createCanvas(400, 400);
+        stroke(255);
+        noFill();
+      }
+
+      function draw() {
+        background(30);
+
+        // 上下に動く線のレイヤー1
+        for (let y = 0; y < height; y += spacing) {
+          let offset = sin(frameCount * speed + y * 0.1) * 10;
+          line(0, y + offset, width, y + offset);
+        }
+
+        // 斜めに動く線のレイヤー2
+        for (let y = 0; y < height; y += spacing) {
+          let offset = cos(frameCount * speed + y * 0.1) * 10;
+          line(0, y + offset, width, y + offset + 50); // 少しずらすと干渉が強調される
+        }
+      }
+    </script>
+  </body>
+</html>
