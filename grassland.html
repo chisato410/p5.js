@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <title>grassland</title>
+    <style>
+      canvas {
+        background: #ddd;
+        border: 1px solid #aaa;
+      }
+    </style>
+  </head>
+  <body>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.11.11/lib/p5.min.js"></script>
+    <script>
+      // 初期化
+
+      // 草をまとめて保存するための配列。草1本＝Bladeクラスのオブジェクト
+      let blades = [];
+
+      function setup() {
+        // 600×400ピクセルの描画領域
+        createCanvas(600, 400);
+        // 線のみ
+        noFill();
+
+        // 画面全体に10ピクセル間隔で草
+        for (let x = 0; x < width; x += 10) {
+          // 草の高さをランダム化
+          blades.push(new Blade(x, random(100, 200)));
+        }
+      }
+
+      // 描画をループ
+      function draw() {
+        // // 背景を青く塗りつぶし　毎フレーム呼びだして残像を消す
+        // background(120, 200, 255);
+
+        // 空のグラデ
+        for (let y = 0; y < height; y++) {
+          let c = lerpColor(
+            color(100, 180, 255),
+            color(180, 220, 255),
+            y / height
+          );
+          stroke(c);
+          line(0, y, width, y);
+        }
+
+        // 地面
+        drawGround();
+
+        // 草をループで処理
+        for (let b of blades) {
+          // 動き
+          b.update();
+          // 描画
+          b.display();
+        }
+      }
+
+      // 地面を描く
+      function drawGround() {
+        // 線消す
+        noStroke();
+        // 緑で塗る
+        fill(80, 180, 80);
+        // y=250から下に地面
+        rect(0, 250, width, height - 250);
+      }
+
+      // 草を作るとき（constructor）、
+      //  その草の x の位置と h（高さ）を覚えて
+      //  そして this.x と this.h に保存
+      // thisは個々のオブジェクトを指す
+      class Blade {
+        // 草を初期化するコンストラクタ
+        constructor(x, h) {
+          // 草の生える位置
+          this.x = x;
+          // 草の高さ
+          this.h = h;
+          // 各草にランダムな出発点を付与
+          this.offset = random(1000);
+        }
+
+        update() {
+          // this.angle = map(
+          //   // 草の揺れ角度
+          //   // frameCountで時間が進むたびに変化
+          //   // map()でnoise()の0〜1の範囲を角度（-PI/8〜PI/8）に変換。
+          //   noise(this.offset + frameCount * 0.01),
+          //   0,
+          //   1,
+          //   -PI / 8,
+          //   PI / 8
+          // );
+
+          // 風の強さをマウスで操作
+          this.angle = map(
+            noise(this.offset + frameCount * 0.01 * (mouseX / width)),
+            0,
+            1,
+            -PI / 6,
+            PI / 6
+          );
+        }
+
+        display() {
+          // 現在の座標状態を保存
+          push();
+          // 草を地面の位置に移動
+          translate(this.x, 250);
+          // 傾ける
+          rotate(this.angle);
+          // stroke(50, 150, 50);
+          // 色をランダムに
+          stroke(40 + random(-10, 10), 150 + random(-20, 20), 40);
+          strokeWeight(2);
+          // 草の茎
+          line(0, 0, 0, -this.h);
+          // 移動の設定を元に戻す
+          pop();
+        }
+
+        // random() 毎回完全にランダム（不連続）
+        // noise() 滑らかに変化する擬似乱数（連続）
+      }
+    </script>
+  </body>
+</html>
