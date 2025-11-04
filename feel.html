@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <title>feel</title>
+    <style>
+      canvas {
+        background: #ddd;
+        border: 1px solid #aaa;
+      }
+    </style>
+  </head>
+  <body>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.11.11/lib/p5.min.js"></script>
+    <script>
+      function setup() {
+        createCanvas(400, 400);
+        noStroke();
+      }
+
+      function draw() {
+        background(30);
+
+        // マウスの位置で色を決定
+        let r = map(mouseX, 0, width, 50, 255);
+        let g = map(mouseY, 0, height, 50, 200);
+        let b = map(mouseX + mouseY, 0, width + height, 50, 255);
+
+        fill(r, g, b, 150);
+
+        // 円の大きさもマウスYで変化
+        let size = map(mouseY, 0, height, 10, 100);
+
+        // ランダムに画面上に円を描く
+        for (let i = 0; i < 10; i++) {
+          let x = random(width);
+          let y = random(height);
+          ellipse(x, y, size, size);
+        }
+      }
+
+      // クリックで背景色が変化
+      function mousePressed() {
+        background(random(50, 255), random(50, 255), random(50, 255));
+      }
+    </script>
+  </body>
+</html>
