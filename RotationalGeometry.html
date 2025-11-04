@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <title>RotationalGeometry</title>
+    <style>
+      canvas {
+        background: #ddd;
+        border: 1px solid #aaa;
+      }
+    </style>
+  </head>
+  <body>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.11.11/lib/p5.min.js"></script>
+    <script>
+      function setup() {
+        createCanvas(400, 400);
+        angleMode(DEGREES); // 角度を度で扱う
+        noFill();
+        strokeWeight(2);
+      }
+
+      function draw() {
+        background(30);
+        translate(width / 2, height / 2); // キャンバス中心に原点を移動
+
+        let numShapes = 6; // 回転する形の数
+        let radius = 100;
+
+        for (let i = 0; i < numShapes; i++) {
+          push();
+          rotate(frameCount + i * 60); // 回転速度と角度
+          stroke(lerpColor(color("#FF6B6B"), color("#4ECDC4"), i / numShapes)); // グラデーション
+          ellipse(0, radius, 50, 50); // 円を描く
+          pop();
+        }
+      }
+    </script>
+  </body>
+</html>
