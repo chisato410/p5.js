@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <title>randomWalk</title>
+    <style>
+      canvas {
+        background: #ddd;
+        border: 1px solid #aaa;
+      }
+    </style>
+  </head>
+  <body>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.11.11/lib/p5.min.js"></script>
+    <script>
+      let x, y;
+
+      function setup() {
+        createCanvas(400, 400);
+        background(30);
+        x = width / 2;
+        y = height / 2;
+        stroke(255);
+        strokeWeight(2);
+      }
+
+      function draw() {
+        let stepSize = 5; // 1フレームでの移動距離
+        let angle = random(TWO_PI); // 0〜360度のランダム角度
+
+        // 新しい位置を計算
+        let newX = x + cos(angle) * stepSize;
+        let newY = y + sin(angle) * stepSize;
+
+        line(x, y, newX, newY); // 線を描く
+        x = newX;
+        y = newY;
+
+        // 画面端でラップさせる
+        if (x < 0) x = width;
+        if (x > width) x = 0;
+        if (y < 0) y = height;
+        if (y > height) y = 0;
+      }
+    </script>
+  </body>
+</html>
