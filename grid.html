@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <title>grid</title>
+    <style>
+      canvas {
+        background: #ddd;
+        border: 1px solid #aaa;
+      }
+    </style>
+  </head>
+  <body>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.11.11/lib/p5.min.js"></script>
+    <script>
+      let cols = 10;
+      let rows = 10;
+      let cellSize;
+
+      function setup() {
+        createCanvas(400, 400);
+        cellSize = width / cols;
+        noFill();
+        stroke(255);
+      }
+
+      function draw() {
+        background(30);
+
+        for (let y = 0; y < rows; y++) {
+          for (let x = 0; x < cols; x++) {
+            let xPos = x * cellSize + cellSize / 2;
+            let yPos = y * cellSize + cellSize / 2;
+
+            // ノイズで角度を揺らす
+            let angle = noise(x * 0.3, y * 0.3, frameCount * 0.01) * 360;
+
+            push();
+            translate(xPos, yPos);
+            rotate(angle);
+            rectMode(CENTER);
+            rect(0, 0, cellSize * 0.6, cellSize * 0.6); // 四角形
+            pop();
+          }
+        }
+      }
+    </script>
+  </body>
+</html>
