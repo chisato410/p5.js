@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <title>abstract</title>
+    <style>
+      canvas {
+        background: #ddd;
+        border: 1px solid #aaa;
+      }
+    </style>
+  </head>
+  <body>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.11.11/lib/p5.min.js"></script>
+    <script>
+      function setup() {
+        createCanvas(400, 400);
+        noFill();
+        stroke(255);
+      }
+
+      function draw() {
+        background(30);
+
+        translate(width / 2, height / 2); // 中心を原点に
+        let t = frameCount * 0.02; // 時間パラメータ
+
+        for (let i = 0; i < 200; i++) {
+          let angle = i * 0.1;
+          let radius = 100 * sin(angle * 3 + t) + 50 * cos(angle * 7 - t);
+          let x = radius * cos(angle);
+          let y = radius * sin(angle);
+
+          stroke(map(i, 0, 200, 100, 255), 100, 255, 150);
+          point(x, y);
+        }
+      }
+    </script>
+  </body>
+</html>
