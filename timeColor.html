@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <title>timeColor</title>
+    <style>
+      canvas {
+        background: #ddd;
+        border: 1px solid #aaa;
+      }
+    </style>
+  </head>
+  <body>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.11.11/lib/p5.min.js"></script>
+    <script>
+      function setup() {
+        createCanvas(400, 400);
+        noStroke();
+      }
+
+      function draw() {
+        // 時間に応じて色を変化させる
+        // frameCountを使うとループアニメーション
+        let t = (frameCount % 600) / 600; // 0〜1でループ
+
+        // 空のグラデーション色
+        let r = lerp(50, 255, t); // 朝から昼に向かって赤成分増加
+        let g = lerp(100, 200, t); // 緑も少し増加
+        let b = lerp(150, 255, t); // 青も増加
+
+        background(r, g, b);
+
+        // 地面のグラデーション
+        for (let y = height / 2; y < height; y++) {
+          let inter = map(y, height / 2, height, 0, 1);
+          let groundColor = lerpColor(
+            color(30, 80, 50),
+            color(120, 200, 100),
+            inter
+          );
+          stroke(groundColor);
+          line(0, y, width, y);
+        }
+
+        // 太陽的な円も時間で動かす
+        fill(255, 255, 0, 150);
+        noStroke();
+        let sunX = width * t;
+        let sunY = height / 4 + sin(TWO_PI * t) * 50;
+        ellipse(sunX, sunY, 50, 50);
+      }
+    </script>
+  </body>
+</html>
