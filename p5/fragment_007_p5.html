@@ -2,40 +2,84 @@
 <html lang="ja">
   <head>
     <meta charset="utf-8" />
-    <title>moiré</title>
+    <title>Fragment #007 – moiré</title>
     <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: #111;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+
       canvas {
-        background: #ddd;
-        border: 1px solid #aaa;
+        display: block;
+        border-radius: 8px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+      }
+
+      .caption {
+        position: absolute;
+        bottom: 16px;
+        left: 16px;
+        font-family: "Helvetica Neue", sans-serif;
+        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.6);
+        letter-spacing: 0.05em;
       }
     </style>
   </head>
   <body>
+    <div class="caption">Fragment #005 – “Moiré”</div>
     <script src="https://cdn.jsdelivr.net/npm/p5@1.11.11/lib/p5.min.js"></script>
     <script>
-      let spacing = 20; // 線の間隔
-      let speed = 0.5; // 線の動く速さ
+      let spacing = 18;
+      let speed1 = 0.01;
+      let speed2 = 0.012;
+      let angle1 = 0;
+      let angle2 = 0;
 
       function setup() {
-        createCanvas(400, 400);
-        stroke(255);
+        createCanvas(500, 500);
+        strokeWeight(1);
         noFill();
       }
 
       function draw() {
-        background(30);
+        background(10);
 
-        // 上下に動く線のレイヤー1
-        for (let y = 0; y < height; y += spacing) {
-          let offset = sin(frameCount * speed + y * 0.1) * 10;
-          line(0, y + offset, width, y + offset);
-        }
+        translate(width / 2, height / 2);
 
-        // 斜めに動く線のレイヤー2
-        for (let y = 0; y < height; y += spacing) {
-          let offset = cos(frameCount * speed + y * 0.1) * 10;
-          line(0, y + offset, width, y + offset + 50); // 少しずらすと干渉が強調される
+        // === レイヤー1 ===
+        push();
+        rotate(angle1);
+        stroke(255, 255, 255, 120);
+        for (let y = -height; y < height; y += spacing) {
+          let offset = sin(frameCount * speed1 + y * 0.05) * 10;
+          line(-width, y + offset, width, y + offset);
         }
+        pop();
+
+        // === レイヤー2 ===
+        push();
+        rotate(angle2);
+        stroke(255, 255, 255, 60);
+        for (let y = -height; y < height; y += spacing) {
+          let offset = cos(frameCount * speed2 + y * 0.07) * 10;
+          line(-width, y + offset, width, y + offset);
+        }
+        pop();
+
+        // 角度をゆっくりズラす
+        angle1 += 0.0003;
+        angle2 -= 0.0004;
+      }
+
+      function keyPressed() {
+        if (key === "s") saveCanvas("fragment_005_moire", "png");
       }
     </script>
   </body>
