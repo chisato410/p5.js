@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Fragment – Web Audio</title>
+    <style>
+      body {
+        margin: 0;
+        background: black;
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+    </style>
+  </head>
+  <body>
+    <button id="play">Play Tone</button>
+    <script>
+      const btn = document.getElementById("play");
+      btn.onclick = () => {
+        const ctx = new AudioContext();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(440, ctx.currentTime);
+        osc.start();
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1);
+        osc.stop(ctx.currentTime + 1);
+      };
+    </script>
+  </body>
+</html>
