@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Fragment #014 – CircleMoiré</title>
+    <title>Fragment #015 – Grid Moiré</title>
 
     <script src="https://cdn.jsdelivr.net/npm/p5@1.11.1/lib/p5.min.js"></script>
 
@@ -52,26 +52,35 @@
 
       function setup() {
         createCanvas(500, 500);
-        noFill();
-        stroke(255);
         strokeWeight(1);
       }
 
       function draw() {
         background(20);
-        translate(0, height / 2);
-        t += 0.02;
+        translate(width / 2, height / 2);
+        t += 0.01;
 
-        for (let layer = 0; layer < 2; layer++) {
-          beginShape();
-          let offset = layer * 0.5;
-          stroke(150 + layer * 100, 150, 255, 120);
-          for (let x = 0; x < width; x += 5) {
-            let y = 80 * sin(x * 0.05 + t + offset);
-            vertex(x, y);
-          }
-          endShape();
+        stroke(255, 180, 200, 100);
+
+        // グリッド1
+        for (let x = -width / 2; x < width / 2; x += 15) {
+          line(x, -height / 2, x, height / 2);
         }
+        for (let y = -height / 2; y < height / 2; y += 15) {
+          line(-width / 2, y, width / 2, y);
+        }
+
+        // グリッド2（回転）
+        push();
+        rotate(t * 0.3);
+        stroke(180, 220, 255, 80);
+        for (let x = -width / 2; x < width / 2; x += 15) {
+          line(x, -height / 2, x, height / 2);
+        }
+        for (let y = -height / 2; y < height / 2; y += 15) {
+          line(-width / 2, y, width / 2, y);
+        }
+        pop();
       }
     </script>
   </body>
