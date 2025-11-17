@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Fragment #107 – "Fractal Sphere"</title>
 
-    <!-- Three.js -->
     <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/simplex-noise@2.4.0/simplex-noise.min.js"></script>
 
@@ -49,7 +48,6 @@
       renderer.setSize(window.innerWidth, window.innerHeight);
       document.body.appendChild(renderer.domElement);
 
-      // 球体
       const geometry = new THREE.SphereGeometry(40, 200, 200);
       const material = new THREE.MeshNormalMaterial({ flatShading: true });
       const sphere = new THREE.Mesh(geometry, material);

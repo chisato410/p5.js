@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Fragment #105 – "Particle Field"</title>
 
-    <!-- Three.js 読み込み -->
     <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/simplex-noise@2.4.0/simplex-noise.min.js"></script>
 
@@ -50,7 +49,6 @@
       renderer.setSize(window.innerWidth, window.innerHeight);
       document.body.appendChild(renderer.domElement);
 
-      // --- パーティクル生成 ---
       const particleCount = 2000;
       const positions = new Float32Array(particleCount * 3);
 
@@ -76,7 +74,6 @@
       const particles = new THREE.Points(geometry, material);
       scene.add(particles);
 
-      // --- アニメーション ---
       function animate() {
         requestAnimationFrame(animate);
 
