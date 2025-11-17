@@ -1,53 +1,135 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
   <head>
     <meta charset="UTF-8" />
-    <title>Fragment – Three.js</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r150/three.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Three.js Fragment Template</title>
+
     <style>
+      html,
       body {
         margin: 0;
+        padding: 0;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: #000; /* 背景は黒 */
         overflow: hidden;
-        background: black;
+        font-family: "Helvetica Neue", sans-serif;
+      }
+
+      /* === 中央の 500×500 の額縁 === */
+      #three-frame {
+        width: 500px;
+        height: 500px;
+        background: #332a26; /* p5 のブラウン背景 */
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 0 40px rgba(0, 0, 0, 0.65);
+      }
+
+      /* === タイトル（画面左下固定） === */
+      .caption {
+        position: fixed;
+        bottom: 16px;
+        left: 16px;
+        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.75);
+        letter-spacing: 0.05em;
+        pointer-events: none; /* クリック無視（制作時便利） */
+      }
+
+      canvas {
+        width: 100%;
+        height: 100%;
+        border-radius: 16px;
       }
     </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.min.js"></script>
   </head>
   <body>
+    <!-- 作品の額縁 -->
+    <div id="three-frame"></div>
+
+    <!-- 画面左下固定のタイトル -->
+    <div class="caption" id="caption">Fragment #001 – "Title"</div>
+
     <script>
+      const fragmentNumber = 1;
+      const fragmentTitle = "Three.js Fragment";
+
+      document.getElementById("caption").innerText = `Fragment #${String(
+        fragmentNumber
+      ).padStart(3, "0")} – "${fragmentTitle}"`;
+
+      const frame = document.getElementById("three-frame");
+
+      // --- Three.js Setup ---
       const scene = new THREE.Scene();
+      scene.background = new THREE.Color("#332a26");
+
       const camera = new THREE.PerspectiveCamera(
-        75,
-        innerWidth / innerHeight,
+        45,
+        frame.clientWidth / frame.clientHeight,
         0.1,
-        1000
+        100
       );
+      camera.position.set(2, 2, 2);
+      camera.lookAt(0, 0, 0);
+
       const renderer = new THREE.WebGLRenderer({ antialias: true });
-      renderer.setSize(innerWidth, innerHeight);
-      document.body.appendChild(renderer.domElement);
+      renderer.setSize(frame.clientWidth, frame.clientHeight);
+      renderer.setPixelRatio(window.devicePixelRatio);
+      frame.appendChild(renderer.domElement);
 
-      const geometry = new THREE.BoxGeometry();
-      const material = new THREE.MeshStandardMaterial({ color: 0x44aa88 });
-      const cube = new THREE.Mesh(geometry, material);
-      scene.add(cube);
-
-      const light = new THREE.DirectionalLight(0xffffff, 1);
-      light.position.set(1, 1, 1);
+      // --- Lights ---
+      scene.add(new THREE.AmbientLight(0xffffff, 0.4));
+      const light = new THREE.PointLight(0xffffff, 1.5);
+      light.position.set(5, 5, 5);
       scene.add(light);
 
-      camera.position.z = 2;
+      // --- Demo Geometry ---
+      const geo = new THREE.IcosahedronGeometry(0.8, 1);
+      const mat = new THREE.MeshStandardMaterial({
+        color: 0xffcc88,
+        roughness: 0.3,
+        metalness: 0.6,
+      });
+      const mesh = new THREE.Mesh(geo, mat);
+      scene.add(mesh);
 
+      // --- Animation Loop ---
       function animate() {
         requestAnimationFrame(animate);
-        cube.rotation.x += 0.01;
-        cube.rotation.y += 0.01;
+        mesh.rotation.x += 0.01;
+        mesh.rotation.y += 0.015;
         renderer.render(scene, camera);
       }
       animate();
 
+      // --- Save Image ---
+      window.addEventListener("keydown", (e) => {
+        if (e.key === "s") {
+          const url = renderer.domElement.toDataURL("image/png");
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = `fragment_${String(fragmentNumber).padStart(
+            3,
+            "0"
+          )}.png`;
+          a.click();
+        }
+      });
+
+      // --- Responsive Resize ---
       window.addEventListener("resize", () => {
-        camera.aspect = innerWidth / innerHeight;
+        const w = frame.clientWidth;
+        const h = frame.clientHeight;
+        camera.aspect = w / h;
         camera.updateProjectionMatrix();
-        renderer.setSize(innerWidth, innerHeight);
+        renderer.setSize(w, h);
       });
     </script>
   </body>
