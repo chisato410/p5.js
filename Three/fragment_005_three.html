@@ -3,12 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Fragment #104 – "Three.js template"</title>
+    <title>Fragment #108 – "Noise Cloud Particles"</title>
 
-    <!-- ① Three.js を先に読み込む -->
     <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/simplex-noise@2.4.0/simplex-noise.min.js"></script>
-
     <style>
       body {
         margin: 0;
@@ -16,14 +14,11 @@
         height: 100vh;
         overflow: hidden;
       }
-
       canvas {
         display: block;
         border-radius: 12px;
         box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
       }
-
-      /* 左下固定キャプション */
       .caption {
         position: fixed;
         left: 20px;
@@ -36,39 +31,74 @@
   </head>
 
   <body>
-    <div class="caption">Fragment #104 – "Three.js template"</div>
+    <div class="caption">Fragment #108 – "Noise Cloud Particles"</div>
 
     <script>
-      // ② THREE が読み込まれた後で使う
       const scene = new THREE.Scene();
       const camera = new THREE.PerspectiveCamera(
         60,
         window.innerWidth / window.innerHeight,
         0.1,
-        100
+        3000
       );
-      camera.position.z = 3;
+      camera.position.z = 800;
 
       const renderer = new THREE.WebGLRenderer({ antialias: true });
       renderer.setSize(window.innerWidth, window.innerHeight);
       document.body.appendChild(renderer.domElement);
 
-      // オブジェクト
-      const geometry = new THREE.TorusKnotGeometry(0.8, 0.25, 200, 32);
-      const material = new THREE.MeshNormalMaterial();
-      const mesh = new THREE.Mesh(geometry, material);
-      scene.add(mesh);
+      // --- 粒子 ---
+      const particleCount = 3000;
+      const positions = new Float32Array(particleCount * 3);
 
-      // アニメーション
+      const simplex = new SimplexNoise();
+
+      for (let i = 0; i < particleCount; i++) {
+        positions[i * 3 + 0] = (Math.random() - 0.5) * 1000;
+        positions[i * 3 + 1] = (Math.random() - 0.5) * 1000;
+        positions[i * 3 + 2] = (Math.random() - 0.5) * 1000;
+      }
+
+      const geometry = new THREE.BufferGeometry();
+      geometry.setAttribute(
+        "position",
+        new THREE.BufferAttribute(positions, 3)
+      );
+
+      const material = new THREE.PointsMaterial({
+        color: 0xffffff,
+        size: 2,
+        transparent: true,
+        opacity: 0.8,
+      });
+
+      const particles = new THREE.Points(geometry, material);
+      scene.add(particles);
+
+      let t = 0;
+
       function animate() {
         requestAnimationFrame(animate);
-        mesh.rotation.x += 0.01;
-        mesh.rotation.y += 0.01;
+        t += 0.005;
+
+        const pos = geometry.attributes.position;
+
+        for (let i = 0; i < particleCount; i++) {
+          const x = pos.getX(i);
+          const y = pos.getY(i);
+
+          const n = simplex.noise3D(x * 0.002, y * 0.002, t);
+
+          pos.setZ(i, n * 200);
+        }
+        pos.needsUpdate = true;
+
+        particles.rotation.y += 0.0008;
+
         renderer.render(scene, camera);
       }
       animate();
 
-      // リサイズ対応
       window.addEventListener("resize", () => {
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
