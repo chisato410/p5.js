@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Three.js Fragment Template</title>
+    <title>Three Fragment Template</title>
 
     <style>
       html,
@@ -14,22 +14,20 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        background: #000; /* 背景は黒 */
+        background: #000;
         overflow: hidden;
         font-family: "Helvetica Neue", sans-serif;
       }
 
-      /* === 中央の 500×500 の額縁 === */
       #three-frame {
         width: 500px;
         height: 500px;
-        background: #332a26; /* p5 のブラウン背景 */
+        background: #332a26;
         border-radius: 16px;
         overflow: hidden;
         box-shadow: 0 0 40px rgba(0, 0, 0, 0.65);
       }
 
-      /* === タイトル（画面左下固定） === */
       .caption {
         position: fixed;
         bottom: 16px;
@@ -37,7 +35,7 @@
         font-size: 0.9rem;
         color: rgba(255, 255, 255, 0.75);
         letter-spacing: 0.05em;
-        pointer-events: none; /* クリック無視（制作時便利） */
+        pointer-events: none;
       }
 
       canvas {
@@ -49,24 +47,23 @@
 
     <script src="https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.min.js"></script>
   </head>
-  <body>
-    <!-- 作品の額縁 -->
-    <div id="three-frame"></div>
 
-    <!-- 画面左下固定のタイトル -->
-    <div class="caption" id="caption">Fragment #001 – "Title"</div>
+  <body>
+    <div id="three-frame"></div>
+    <div class="caption" id="caption">Fragment #000 – "Untitled"</div>
 
     <script>
-      const fragmentNumber = 1;
-      const fragmentTitle = "Three.js Fragment";
+      /* === Fragment Metadata === */
+      const fragmentNumber = 0; // ← ここ変える
+      const fragmentTitle = "Untitled"; // ← ここ変える
 
       document.getElementById("caption").innerText = `Fragment #${String(
         fragmentNumber
       ).padStart(3, "0")} – "${fragmentTitle}"`;
 
+      /* === Three.js 基本セットアップ === */
       const frame = document.getElementById("three-frame");
 
-      // --- Three.js Setup ---
       const scene = new THREE.Scene();
       scene.background = new THREE.Color("#332a26");
 
@@ -76,7 +73,7 @@
         0.1,
         100
       );
-      camera.position.set(2, 2, 2);
+      camera.position.set(2, 2, 3);
       camera.lookAt(0, 0, 0);
 
       const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -84,32 +81,35 @@
       renderer.setPixelRatio(window.devicePixelRatio);
       frame.appendChild(renderer.domElement);
 
-      // --- Lights ---
-      scene.add(new THREE.AmbientLight(0xffffff, 0.4));
+      /* === Lights === */
+      scene.add(new THREE.AmbientLight(0xffffff, 0.6));
       const light = new THREE.PointLight(0xffffff, 1.5);
-      light.position.set(5, 5, 5);
+      light.position.set(3, 5, 3);
       scene.add(light);
 
-      // --- Demo Geometry ---
-      const geo = new THREE.IcosahedronGeometry(0.8, 1);
-      const mat = new THREE.MeshStandardMaterial({
-        color: 0xffcc88,
-        roughness: 0.3,
-        metalness: 0.6,
+      /* === ▼ ここから作品コードを書く場所（中身だけ毎回変える） === */
+
+      const geometry = new THREE.TorusKnotGeometry(0.7, 0.25, 200, 32);
+      const material = new THREE.MeshStandardMaterial({
+        color: 0xff99aa,
+        roughness: 0.25,
+        metalness: 0.75,
       });
-      const mesh = new THREE.Mesh(geo, mat);
+      const mesh = new THREE.Mesh(geometry, material);
       scene.add(mesh);
 
-      // --- Animation Loop ---
+      /* === ▲ 中身のコード（100作品ともここが変わる） === */
+
+      /* === Animation Loop === */
       function animate() {
         requestAnimationFrame(animate);
         mesh.rotation.x += 0.01;
-        mesh.rotation.y += 0.015;
+        mesh.rotation.y += 0.008;
         renderer.render(scene, camera);
       }
       animate();
 
-      // --- Save Image ---
+      /* === SキーでPNG保存 === */
       window.addEventListener("keydown", (e) => {
         if (e.key === "s") {
           const url = renderer.domElement.toDataURL("image/png");
@@ -123,7 +123,7 @@
         }
       });
 
-      // --- Responsive Resize ---
+      /* === ウィンドウサイズに対応 === */
       window.addEventListener("resize", () => {
         const w = frame.clientWidth;
         const h = frame.clientHeight;
