@@ -67,17 +67,15 @@
       light2.position.set(-5, 5, -5);
       scene.add(light2);
 
-      // 脳を作成
+      // 脳
       function createBrain() {
         const brain = new THREE.Group();
 
-        // 脳の主要部分（左右の半球）
         const hemisphereGeometry = new THREE.SphereGeometry(2.5, 64, 64);
         const originalPositions =
           hemisphereGeometry.attributes.position.array.slice();
         hemisphereGeometry.userData.originalPositions = originalPositions;
 
-        // 表面に凹凸を追加（脳のしわ）
         const positions = hemisphereGeometry.attributes.position.array;
         for (let i = 0; i < positions.length; i += 3) {
           const x = positions[i];
@@ -116,7 +114,6 @@
         rightHemisphere.position.x = 1;
         brain.add(rightHemisphere);
 
-        // 脳幹
         const brainStemGeometry = new THREE.CylinderGeometry(0.8, 1.2, 3, 32);
         const brainStemMaterial = new THREE.MeshPhongMaterial({
           color: 0xff99bb,
@@ -126,7 +123,6 @@
         brainStem.position.y = -3;
         brain.add(brainStem);
 
-        // 脳のしわ（追加の線）
         const wrinkles = [];
         for (let i = 0; i < 30; i++) {
           const points = [];
@@ -197,12 +193,10 @@
         return brain;
       }
 
-      // メインの脳
       const brain = createBrain();
       brain.position.y = 5;
       scene.add(brain);
 
-      // 溶けた液体の滴
       const drips = [];
       for (let i = 0; i < 40; i++) {
         const dripGeometry = new THREE.SphereGeometry(0.2, 8, 8);
@@ -244,11 +238,9 @@
       puddle.position.y = -3;
       scene.add(puddle);
 
-      // 液だまりの波
       const puddlePositions = puddleGeometry.attributes.position.array;
       const originalPuddlePositions = puddlePositions.slice();
 
-      // 思考の粒子
       const thoughtGeometry = new THREE.BufferGeometry();
       const thoughtCount = 200;
       const thoughtPositions = new Float32Array(thoughtCount * 3);
@@ -299,7 +291,6 @@
 
         const t = performance.now() * 0.001;
 
-        // 脳の溶け
         const leftHemi = brain.userData.leftHemisphere;
         const rightHemi = brain.userData.rightHemisphere;
 
@@ -315,7 +306,6 @@
             const y = originalPositions[i + 1];
             const z = originalPositions[i + 2];
 
-            // 下部が溶けて伸びる
             if (y < 0) {
               const factor = -y / 2.5;
               positions[i] = x * (1 - factor * meltAmount * 0.4);
@@ -327,7 +317,6 @@
               positions[i + 2] = z;
             }
 
-            // 波打つ効果
             const wave = Math.sin(t * 2 + x + y + z) * 0.15;
             positions[i + 1] += wave * meltAmount;
           }
@@ -336,11 +325,9 @@
           geometry.computeVertexNormals();
         });
 
-        // 脳全体がゆっくり回転
         brain.rotation.y = t * 0.2;
         brain.rotation.x = Math.sin(t * 0.3) * 0.1;
 
-        // シナプスの脈動
         brain.userData.synapses.forEach((synapse) => {
           const data = synapse.userData;
           const pulse =
@@ -349,7 +336,6 @@
           synapse.material.opacity = 0.5 + pulse * 0.5;
         });
 
-        // 滴の落下
         drips.forEach((drip) => {
           const data = drip.userData;
           drip.position.y -= data.fallSpeed;
