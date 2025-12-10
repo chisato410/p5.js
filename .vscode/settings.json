@@ -1,3 +1,4 @@
 {
-  "cSpell.words": ["clearcoat", "figur", "lerp", "metalness", "Moiré", "Phong"]
+  "cSpell.words": ["clearcoat", "figur", "lerp", "metalness", "Moiré", "Phong"],
+  "liveServer.settings.port": 5501
 }
