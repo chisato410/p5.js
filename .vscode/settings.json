@@ -1,4 +1,15 @@
 {
-  "cSpell.words": ["clearcoat", "figur", "lerp", "metalness", "Moiré", "Phong"],
+  "cSpell.words": [
+    "clearcoat",
+    "colorray",
+    "dfbbb",
+    "figur",
+    "heightmap",
+    "lerp",
+    "metalness",
+    "Moiré",
+    "Phong",
+    "unicoord"
+  ],
   "liveServer.settings.port": 5501
 }
